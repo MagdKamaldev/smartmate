@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "173001145230",
+    "project_id": "smartmate0",
+    "storage_bucket": "smartmate0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:173001145230:android:fda38c4560bd7dc46882df",
+        "android_client_info": {
+          "package_name": "com.example.smartmate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "173001145230-g04eakma8b0q8uoacc4j6rsfcqodtoi9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.smartmate",
+            "certificate_hash": "ad366ab4de709331873c66e97bb87abdc620b407"
+          }
+        },
+        {
+          "client_id": "173001145230-n7fgqfs3o9esmj1vmoqistntc4s4rkvk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHdawHdsr2XJhJbiXFF6jzVp2LWfq2QLg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "173001145230-n7fgqfs3o9esmj1vmoqistntc4s4rkvk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
