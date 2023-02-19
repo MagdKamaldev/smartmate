@@ -1,13 +1,12 @@
 // ignore_for_file: unused_local_variable, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, prefer_const_constructors
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:smartmate/modules/no_connection/no_connection_screen.dart';
 import 'package:smartmate/modules/onBoarding/on_boarding.dart';
-import 'package:smartmate/shared/cubit/login/login_provider.dart';
+import 'package:smartmate/shared/cubit/login/login_cubit.dart';
 import 'package:smartmate/shared/networks/local/cache_helper.dart';
 import 'modules/login/login_screen.dart';
-import 'shared/cubit/login/internet_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,19 +32,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
+    return MultiBlocProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => LoginProvider()),
-        ChangeNotifierProvider(create: (context) => InternetProvider()),
+        BlocProvider(create: (context) => LoginCubit()),
+       
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(),
-        home: Consumer<InternetProvider>(
+        home: Consumer<LoginCubit>(
           builder: (context, internetProvider, child) {
-            return internetProvider.hasInternet
-                ? startWidget
-                : NoConnectionScreen();
+            return startWidget;
           },
         ),
         debugShowCheckedModeBanner: false,

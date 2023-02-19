@@ -141,12 +141,21 @@ void openSnackBar(context, messege, color) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       backgroundColor: color,
       action: SnackBarAction(
-        label: "on",
+        label: "",
         onPressed: () {},
         textColor: Colors.white,
       ),
-      content: Text(
-        messege,
-        style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 20),
+      content: Row(
+        children: [
+          Center(
+            child: Text(
+              messege,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall!
+                  .copyWith(fontSize: 20),
+            ),
+          ),
+        ],
       )));
 }
