@@ -19,3 +19,5 @@ class GetDataFromSharedPreferencesState extends LoginStates{}
 class SignOutState extends LoginStates{}
 
 class CheckCinnectionState extends LoginStates{}
+
+class SavePhoneAuthDataState extends LoginStates{}

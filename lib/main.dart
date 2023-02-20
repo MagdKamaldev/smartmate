@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:smartmate/layout/home_layout.dart';
 import 'package:smartmate/modules/onBoarding/on_boarding.dart';
 import 'package:smartmate/shared/cubit/login/login_cubit.dart';
 import 'package:smartmate/shared/networks/local/cache_helper.dart';
@@ -14,9 +15,14 @@ void main() async {
   await CacheHelper.init();
   Widget? widget;
   bool? onBoarding = CacheHelper.getData(key: "onBoarding");
+  String? uid = CacheHelper.getData(key: "uid");
 
   if (onBoarding != null) {
-    widget = LoginScreen();
+    if (uid != null) {
+      widget = HomeScreen();
+    } else {
+      widget = LoginScreen();
+    }
   } else {
     widget = OnBoardingScreen();
   }
@@ -35,7 +41,6 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => LoginCubit()),
-       
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

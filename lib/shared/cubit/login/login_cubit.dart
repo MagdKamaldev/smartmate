@@ -7,8 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartmate/shared/cubit/login/login_states.dart';
+import 'package:smartmate/shared/networks/local/cache_helper.dart';
 import '../../../layout/home_layout.dart';
 import '../../components/components.dart';
+import '../../styles/colors.dart';
 
 class LoginCubit extends Cubit<LoginStates> {
   LoginCubit() : super(LoginInitalState());
@@ -42,11 +44,11 @@ class LoginCubit extends Cubit<LoginStates> {
   String? _imageUrl;
   String? get imageUrl => _imageUrl;
 
-
   SignInProvider() {
     checkSignIn();
   }
 
+  //                                   google
 
   Future checkSignIn() async {
     final SharedPreferences s = await SharedPreferences.getInstance();
@@ -108,8 +110,7 @@ class LoginCubit extends Cubit<LoginStates> {
     }
   }
 
-
-   bool _hasInternet = false;
+  bool _hasInternet = false;
   bool get hasInternet => _hasInternet;
 
   InternetProviders() {
@@ -125,19 +126,17 @@ class LoginCubit extends Cubit<LoginStates> {
       emit(CheckCinnectionState());
     }
   }
-  
 
-   handleAfterSignIn(context) {
+  handleAfterSignIn(context) {
     Future.delayed(const Duration(milliseconds: 1000)).then((value) {
       navigateAndFinish(
         context,
-        WelcomeScreen(),
+        HomeScreen(),
       );
     });
   }
 
-   Future handleGoogleSignIn(googleController,context) async {
-    
+  Future handleGoogleSignIn(googleController, context) async {
     await checkInternetConnection();
 
     if (hasInternet == false) {
@@ -151,11 +150,12 @@ class LoginCubit extends Cubit<LoginStates> {
         } else {
           checkIfUserExists().then((value) async {
             if (value == true) {
-              await getUserDataFromFirebase(uid).then((value) => saveDataToSharedPreferences()
-                  .then((value) => setSignIn().then((value) {
-                        googleController.success();
-                        handleAfterSignIn(context);
-                      })));
+              await getUserDataFromFirebase(uid).then((value) =>
+                  saveDataToSharedPreferences()
+                      .then((value) => setSignIn().then((value) {
+                            googleController.success();
+                            handleAfterSignIn(context);
+                          })));
             } else {
               saveDataToFireBase().then((value) {
                 saveDataToSharedPreferences().then((value) {
@@ -171,7 +171,6 @@ class LoginCubit extends Cubit<LoginStates> {
       });
     }
   }
-
 
   Future getUserDataFromFirebase(uid) async {
     await FirebaseFirestore.instance
@@ -234,13 +233,124 @@ class LoginCubit extends Cubit<LoginStates> {
     await firebaseAuth.signOut();
     await googleSignIn.signOut();
     _isSignedIn = false;
-    emit(SignOutState());
     clearStoredData();
+    emit(SignOutState());
   }
 
   Future clearStoredData() async {
     final SharedPreferences s = await SharedPreferences.getInstance();
     s.clear();
+    CacheHelper.saveData(key: "onBoarding", value: true);
   }
-  
+
+  //                            phone number
+
+  Future phoneLogin(
+    BuildContext context,
+    String number,
+    GlobalKey<FormState> formKey,
+    TextEditingController otpCodeController,
+    TextEditingController emailController,
+    TextEditingController nameController,
+  ) async {
+    await checkInternetConnection();
+    if (hasInternet == false) {
+      openSnackBar(context, "Check your Connection", Colors.red);
+    } else {
+      if (formKey.currentState!.validate()) {
+        FirebaseAuth.instance.verifyPhoneNumber(
+            phoneNumber: number,
+            verificationCompleted: (AuthCredential credential) async {
+              await FirebaseAuth.instance.signInWithCredential(credential);
+            },
+            verificationFailed: (FirebaseAuthException error) {
+              openSnackBar(context, error.toString(), Colors.red);
+            },
+            codeSent: (String verificationId, int? forceResendingToken) {
+              showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text("Enter Code"),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextField(
+                            controller: otpCodeController,
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.code),
+                              errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide:
+                                      const BorderSide(color: Colors.red)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(color: defaultColor)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide:
+                                      const BorderSide(color: Colors.grey)),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          ElevatedButton(
+                            onPressed: () async {
+                              final code = otpCodeController.text.trim();
+                              AuthCredential authCredential =
+                                  PhoneAuthProvider.credential(
+                                      verificationId: verificationId,
+                                      smsCode: code);
+                              User user = (await FirebaseAuth.instance
+                                      .signInWithCredential(authCredential))
+                                  .user!;
+                              phoneNumberUser(user, emailController.text,
+                                  nameController.text);
+                              //checking if the user exists
+
+                              checkIfUserExists().then((value) async {
+                                if (value == true) {
+                                  await getUserDataFromFirebase(uid).then(
+                                      (value) => saveDataToSharedPreferences()
+                                          .then((value) =>
+                                              setSignIn().then((value) {
+                                                navigateAndFinish(
+                                                    context, HomeScreen());
+                                              })));
+                                } else {
+                                  saveDataToFireBase().then((value) {
+                                    saveDataToSharedPreferences().then((value) {
+                                      setSignIn().then((value) {
+                                        navigateAndFinish(
+                                            context, HomeScreen());
+                                      });
+                                    });
+                                  });
+                                }
+                              });
+                            },
+                            child: const Text("confirm"),
+                          ),
+                        ],
+                      ),
+                    );
+                  });
+            },
+            codeAutoRetrievalTimeout: (String verification) {});
+      }
+    }
+  }
+
+  void phoneNumberUser(User user, email, name) {
+    _name = name;
+    _email = email;
+    _imageUrl =
+        "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn4.iconfinder.com%2Fdata%2Ficons%2Fsocial-messaging-ui-color-and-shapes-3%2F177800%2F129-512.png&f=1&nofb=1&ipt=2e57bbfa1aa643cb1b506496b21cf4ddc891d8110ceb9c6a944ddc35a3e49b26&ipo=images";
+    _uid = user.phoneNumber;
+    _provider = "Phone";
+    _isSignedIn = true;
+    emit(SavePhoneAuthDataState());
+  }
 }

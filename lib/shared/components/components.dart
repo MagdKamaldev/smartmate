@@ -145,17 +145,13 @@ void openSnackBar(context, messege, color) {
         onPressed: () {},
         textColor: Colors.white,
       ),
-      content: Row(
-        children: [
-          Center(
-            child: Text(
-              messege,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleSmall!
-                  .copyWith(fontSize: 20),
-            ),
-          ),
-        ],
+      content: Center(
+        child: Text(
+          messege,
+          style: Theme.of(context)
+              .textTheme
+              .titleSmall!
+              .copyWith(fontSize: 20),
+        ),
       )));
 }
