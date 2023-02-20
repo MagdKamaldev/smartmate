@@ -294,9 +294,12 @@ class LoginCubit extends Cubit<LoginStates> {
                             ),
                           ),
                           const SizedBox(
-                            height: 10,
+                            height: 20,
                           ),
                           ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: defaultColor,
+                            ),
                             onPressed: () async {
                               final code = otpCodeController.text.trim();
                               AuthCredential authCredential =
@@ -352,5 +355,29 @@ class LoginCubit extends Cubit<LoginStates> {
     _provider = "Phone";
     _isSignedIn = true;
     emit(SavePhoneAuthDataState());
+  }
+
+  //                              email and password
+  void userLogin({required String email, required String password, context}) {
+    emit(LoginLoadingState());
+    FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: email, password: password)
+        .then((value) {
+      CacheHelper.saveData(key: "uid", value: "user");
+      navigateTo(context, HomeScreen());
+      emit(LoginSuccessState(value.user!.uid));
+    }).catchError((error) {
+      showToast(text: error.toString(), state: ToasStates.error);
+      emit(LoginErrodState(error.toString()));
+    });
+  }
+
+  IconData suffix = Icons.visibility_off_outlined;
+  bool isPassword = true;
+  void changePasswordVisibility() {
+    isPassword = !isPassword;
+    suffix =
+        isPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined;
+    emit(LoginChangePasswordState());
   }
 }

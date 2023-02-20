@@ -49,6 +49,7 @@ dependencies:
   connectivity_plus: ^3.0.3
   bloc: ^8.1.1
   flutter_bloc: ^8.1.2
+  conditional_builder_null_safety: ^0.0.6
   
   
 

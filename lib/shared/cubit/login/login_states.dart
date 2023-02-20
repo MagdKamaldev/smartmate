@@ -21,3 +21,18 @@ class SignOutState extends LoginStates{}
 class CheckCinnectionState extends LoginStates{}
 
 class SavePhoneAuthDataState extends LoginStates{}
+
+class LoginLoadingState extends LoginStates {}
+
+class LoginSuccessState extends LoginStates {
+  final String uId;
+  LoginSuccessState(this.uId);
+}
+
+class LoginErrodState extends LoginStates {
+  final String error;
+
+  LoginErrodState(this.error);
+}
+
+class LoginChangePasswordState extends LoginStates {}

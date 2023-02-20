@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sized_box_for_whitespace
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:smartmate/shared/styles/colors.dart';
 
 Widget defaultDivider() => Container(
       width: double.infinity,
@@ -12,12 +14,17 @@ Widget defaultTextButton({
   required String text,
   required VoidCallback onpressed,
 }) =>
-    TextButton(onPressed: onpressed, child: Text(text.toUpperCase()));
+    TextButton(
+        onPressed: onpressed,
+        child: Text(
+          text.toUpperCase(),
+          style: TextStyle(color: defaultColor),
+        ));
 
 Widget defaultButton({
   double height = 40,
   double width = double.infinity,
-  Color background = Colors.blue,
+  Color background = defaultColor,
   bool isUpperCase = true,
   double radius = 0.0,
   required VoidCallback function,
@@ -71,18 +78,28 @@ Widget defaultFormField({
         labelText: label,
         prefixIcon: Icon(
           prefix,
+          color: defaultColor,
         ),
         suffixIcon: suffix != null
             ? IconButton(
                 icon: Icon(
                   suffix,
+                  color: defaultColor,
                 ),
                 onPressed: () {
                   suffixPressed!();
                 },
               )
             : null,
-        border: OutlineInputBorder(),
+        errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Colors.red)),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: defaultColor)),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Colors.grey)),
       ),
     );
 
@@ -99,12 +116,12 @@ Widget myDivider() => Padding(
 
 void navigateTo(context, widget) => Navigator.push(
     context,
-    MaterialPageRoute(
+    CupertinoPageRoute(
       builder: (context) => widget,
     ));
 
 void navigateAndFinish(context, widget) => Navigator.pushAndRemoveUntil(
-        context, MaterialPageRoute(builder: (context) => widget), (route) {
+        context, CupertinoPageRoute(builder: (context) => widget), (route) {
       return false;
     });
 void showToast({
@@ -148,10 +165,7 @@ void openSnackBar(context, messege, color) {
       content: Center(
         child: Text(
           messege,
-          style: Theme.of(context)
-              .textTheme
-              .titleSmall!
-              .copyWith(fontSize: 20),
+          style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 20),
         ),
       )));
 }

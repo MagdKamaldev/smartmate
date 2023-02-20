@@ -41,6 +41,7 @@ class PhoneLogin extends StatelessWidget {
                 child: Form(
                   key: formKey,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(
                         height: 100,
@@ -151,11 +152,21 @@ class PhoneLogin extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 10,
+                      ),
+                      Text(
+                        "Don't forget to add +2",
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(fontSize: 12, color: Colors.grey),
+                      ),
+                      const SizedBox(
+                        height: 30,
                       ),
                       Container(
                         width: double.infinity,
-                        height: 45,
+                        height: 55,
                         child: ElevatedButton(
                           onPressed: () {
                             LoginCubit.get(context).phoneLogin(
