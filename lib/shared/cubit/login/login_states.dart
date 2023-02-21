@@ -36,3 +36,8 @@ class LoginErrodState extends LoginStates {
 }
 
 class LoginChangePasswordState extends LoginStates {}
+
+
+class CreateUserLoginSuccessState extends LoginStates {}
+
+class CreateUserLoginErrorState extends LoginStates {}

@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartmate/shared/cubit/login/login_states.dart';
 import 'package:smartmate/shared/networks/local/cache_helper.dart';
 import '../../../layout/home_layout.dart';
+import '../../../models/user_model.dart';
 import '../../components/components.dart';
 import '../../styles/colors.dart';
 
@@ -34,15 +35,6 @@ class LoginCubit extends Cubit<LoginStates> {
 
   String? _uid;
   String? get uid => _uid;
-
-  String? _name;
-  String? get name => _name;
-
-  String? _email;
-  String? get email => _email;
-
-  String? _imageUrl;
-  String? get imageUrl => _imageUrl;
 
   SignInProvider() {
     checkSignIn();
@@ -80,11 +72,16 @@ class LoginCubit extends Cubit<LoginStates> {
             (await firebaseAuth.signInWithCredential(credential)).user!;
 
         //save user details
-        _name = userDetails.displayName;
-        _email = userDetails.email;
-        _uid = userDetails.uid;
-        _imageUrl = userDetails.photoURL;
+
+        createUser(
+            name: userDetails.displayName!,
+            email: userDetails.email!,
+            phone: "null",
+            uId: userDetails.uid,
+            image: userDetails.photoURL);
         _provider = "Google";
+        _uid = userDetails.uid;
+        _isSignedIn = true;
         emit(SignInWithGoogleSuccesState());
       } on FirebaseAuthException catch (error) {
         switch (error.code) {
@@ -150,73 +147,20 @@ class LoginCubit extends Cubit<LoginStates> {
         } else {
           checkIfUserExists().then((value) async {
             if (value == true) {
-              await getUserDataFromFirebase(uid).then((value) =>
-                  saveDataToSharedPreferences()
-                      .then((value) => setSignIn().then((value) {
-                            googleController.success();
-                            handleAfterSignIn(context);
-                          })));
+              await setSignIn().then((value) {
+                googleController.success();
+                handleAfterSignIn(context);
+              });
             } else {
-              saveDataToFireBase().then((value) {
-                saveDataToSharedPreferences().then((value) {
-                  setSignIn().then((value) {
-                    googleController.success();
-                    handleAfterSignIn(context);
-                  });
-                });
+              setSignIn().then((value) {
+                googleController.success();
+                handleAfterSignIn(context);
               });
             }
           });
         }
       });
     }
-  }
-
-  Future getUserDataFromFirebase(uid) async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(uid)
-        .get()
-        .then((DocumentSnapshot snapshot) => {
-              _uid = snapshot["uid"],
-              _name = snapshot["name"],
-              _email = snapshot["email"],
-              _imageUrl = snapshot["imageUrl"],
-              _provider = snapshot["provider"],
-            });
-  }
-
-  Future saveDataToFireBase() async {
-    final DocumentReference r =
-        FirebaseFirestore.instance.collection("users").doc(uid);
-    await r.set({
-      "name": _name,
-      "email": _email,
-      "imageUrl": _imageUrl,
-      "provider": _provider,
-      "uid": _uid,
-    });
-    emit(SaveDataToFireBaseState());
-  }
-
-  Future saveDataToSharedPreferences() async {
-    final SharedPreferences s = await SharedPreferences.getInstance();
-    await s.setString("name", _name!);
-    await s.setString("email", _email!);
-    await s.setString("imageUrl", _imageUrl!);
-    await s.setString("provider", _provider!);
-    await s.setString("uid", _uid!);
-    emit(SaveDataToSharedPreferncesState());
-  }
-
-  Future getDataFromSharedPreferences() async {
-    final SharedPreferences s = await SharedPreferences.getInstance();
-    _name = s.getString("name");
-    _email = s.getString("email");
-    _imageUrl = s.getString("imageUrl");
-    _provider = s.getString("provider");
-    _uid = s.getString("uid");
-    emit(GetDataFromSharedPreferencesState());
   }
 
   Future<bool> checkIfUserExists() async {
@@ -315,21 +259,12 @@ class LoginCubit extends Cubit<LoginStates> {
 
                               checkIfUserExists().then((value) async {
                                 if (value == true) {
-                                  await getUserDataFromFirebase(uid).then(
-                                      (value) => saveDataToSharedPreferences()
-                                          .then((value) =>
-                                              setSignIn().then((value) {
-                                                navigateAndFinish(
-                                                    context, HomeScreen());
-                                              })));
+                                  await setSignIn().then((value) {
+                                    navigateAndFinish(context, HomeScreen());
+                                  });
                                 } else {
-                                  saveDataToFireBase().then((value) {
-                                    saveDataToSharedPreferences().then((value) {
-                                      setSignIn().then((value) {
-                                        navigateAndFinish(
-                                            context, HomeScreen());
-                                      });
-                                    });
+                                  setSignIn().then((value) {
+                                    navigateAndFinish(context, HomeScreen());
                                   });
                                 }
                               });
@@ -346,12 +281,44 @@ class LoginCubit extends Cubit<LoginStates> {
     }
   }
 
+  void createUser({
+    required String name,
+    required String email,
+    required String phone,
+    required String uId,
+    String? image,
+  }) {
+    UserModel model = UserModel(
+      name: name,
+      email: email,
+      phone: phone,
+      image: image == "null"
+          ? "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn4.iconfinder.com%2Fdata%2Ficons%2Fsocial-messaging-ui-color-and-shapes-3%2F177800%2F129-512.png&f=1&nofb=1&ipt=2e57bbfa1aa643cb1b506496b21cf4ddc891d8110ceb9c6a944ddc35a3e49b26&ipo=images"
+          : image,
+      uid: uId,
+    );
+
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(uId)
+        .set(model.toMap())
+        .then((value) {
+      emit(CreateUserLoginSuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(CreateUserLoginErrorState());
+    });
+  }
+
   void phoneNumberUser(User user, email, name) {
-    _name = name;
-    _email = email;
-    _imageUrl =
-        "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn4.iconfinder.com%2Fdata%2Ficons%2Fsocial-messaging-ui-color-and-shapes-3%2F177800%2F129-512.png&f=1&nofb=1&ipt=2e57bbfa1aa643cb1b506496b21cf4ddc891d8110ceb9c6a944ddc35a3e49b26&ipo=images";
-    _uid = user.phoneNumber;
+    createUser(
+        name: name,
+        email: email,
+        phone: user.phoneNumber!,
+        uId: user.phoneNumber!,
+        image:
+            "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn4.iconfinder.com%2Fdata%2Ficons%2Fsocial-messaging-ui-color-and-shapes-3%2F177800%2F129-512.png&f=1&nofb=1&ipt=2e57bbfa1aa643cb1b506496b21cf4ddc891d8110ceb9c6a944ddc35a3e49b26&ipo=images");
+
     _provider = "Phone";
     _isSignedIn = true;
     emit(SavePhoneAuthDataState());

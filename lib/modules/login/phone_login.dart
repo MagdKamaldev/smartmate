@@ -179,7 +179,9 @@ class PhoneLogin extends StatelessWidget {
                           },
                           child: const Text("Confirm"),
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: defaultColor),
+                              backgroundColor: defaultColor,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20))),
                         ),
                       ),
                     ],

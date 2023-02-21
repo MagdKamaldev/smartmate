@@ -1,13 +1,12 @@
 // ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, prefer_const_literals_to_create_immutables, must_be_immutable
-
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
 import '../../shared/components/components.dart';
 import '../../shared/networks/local/cache_helper.dart';
 import '../../shared/styles/colors.dart';
 import '../login/login_screen.dart';
+
 
 class BoardingModel {
   final String title;
