@@ -1,5 +1,4 @@
 // ignore_for_file: must_be_immutable
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartmate/modules/login/login_screen.dart';
@@ -81,7 +80,7 @@ class PhoneLogin extends StatelessWidget {
                           enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide:
-                                  const BorderSide(color: defaultColor)),
+                                 BorderSide(color: defaultColor)),
                           focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: const BorderSide(color: Colors.grey)),
@@ -113,7 +112,7 @@ class PhoneLogin extends StatelessWidget {
                           enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide:
-                                  const BorderSide(color: defaultColor)),
+                                   BorderSide(color: defaultColor)),
                           focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: const BorderSide(color: Colors.grey)),
@@ -145,7 +144,7 @@ class PhoneLogin extends StatelessWidget {
                           enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide:
-                                  const BorderSide(color: defaultColor)),
+                                   BorderSide(color: defaultColor)),
                           focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: const BorderSide(color: Colors.grey)),

@@ -2,6 +2,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:smartmate/models/messege_model.dart';
+import 'package:smartmate/models/user_model.dart';
+import 'package:smartmate/modules/screens/chat_details.dart';
 import 'package:smartmate/shared/styles/colors.dart';
 
 Widget defaultDivider() => Container(
@@ -24,7 +27,6 @@ Widget defaultTextButton({
 Widget defaultButton({
   double height = 40,
   double width = double.infinity,
-  Color background = defaultColor,
   bool isUpperCase = true,
   double radius = 0.0,
   required VoidCallback function,
@@ -35,7 +37,7 @@ Widget defaultButton({
         width: width,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(radius),
-          color: background,
+          color: defaultColor,
         ),
         child: MaterialButton(
           onPressed: function,
@@ -60,58 +62,63 @@ Widget defaultFormField({
   IconData? suffix,
   Function? suffixPressed,
   bool isClickable = true,
-}) =>
-    TextFormField(
-      validator: (value) {
-        return validate!(value);
-      },
-      controller: controller,
-      keyboardType: type,
-      enabled: isClickable,
-      obscureText: isPassword,
-      onFieldSubmitted: (s) {
-        onSubmit();
-      },
-      onChanged: (s) => onChanged,
-      onTap: () => onTab(),
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(
-          prefix,
-          color: defaultColor,
-        ),
-        suffixIcon: suffix != null
-            ? IconButton(
-                icon: Icon(
-                  suffix,
-                  color: defaultColor,
-                ),
-                onPressed: () {
-                  suffixPressed!();
-                },
-              )
-            : null,
-        errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: Colors.red)),
-        enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: defaultColor)),
-        focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: Colors.grey)),
-      ),
-    );
+}) {
+  final FocusNode focusNode = FocusNode();
+  Color labelColor = Colors.grey; // Initial label color when not focused
 
-Widget myDivider() => Padding(
-      padding: const EdgeInsetsDirectional.only(
-        start: 20.0,
+  return TextFormField(
+    validator: (value) {
+      return validate!(value);
+    },
+    controller: controller,
+    keyboardType: type,
+    enabled: isClickable,
+    obscureText: isPassword,
+    onFieldSubmitted: (s) {
+      onSubmit();
+    },
+    onChanged: (s) => onChanged,
+    onTap: () => onTab(),
+    focusNode: focusNode,
+    decoration: InputDecoration(
+      labelText: label,
+      labelStyle: TextStyle(color: labelColor), // Use the current label color
+      prefixIcon: Icon(
+        prefix,
+        color: defaultColor,
       ),
-      child: Container(
-        width: double.infinity,
-        height: 1.0,
-        color: Colors.grey[300],
+      suffixIcon: suffix != null
+          ? IconButton(
+              icon: Icon(
+                suffix,
+                color: defaultColor,
+              ),
+              onPressed: () {
+                suffixPressed!();
+              },
+            )
+          : null,
+      errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(
+            color: Colors.red,
+          )),
+      enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(
+            color: defaultColor,
+          )),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
       ),
+    ),
+  );
+}
+
+Widget myDivider() => Container(
+      width: double.infinity,
+      height: 1,
+      color: Colors.grey[300],
     );
 
 void navigateTo(context, widget) => Navigator.push(
@@ -169,3 +176,68 @@ void openSnackBar(context, messege, color) {
         ),
       )));
 }
+
+Widget buildChatItem({
+  UserModel? model,
+  required context,
+  MessegeModel? lastmessege,
+}) =>
+    GestureDetector(
+      onTap: () {
+        navigateTo(
+            context,
+            ChatDetails(
+              userModel: model,
+            ));
+      },
+      child: Container(
+        width: double.infinity,
+        height: 50,
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 25,
+              backgroundImage: NetworkImage(
+                model!.image!,
+              ),
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    model.name!,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  // SizedBox(
+                  //   height: 5,
+                  // ),
+                  // Expanded(
+                  //   child: Row(
+                  //     children: [
+                  //       SizedBox(
+                  //         width: 5,
+                  //       ),
+                  //       Text(
+                  //         "last messege",
+                  //         style: TextStyle(color: Colors.grey[600]),
+                  //       ),
+                  //       Spacer(),
+                  //       Text(
+                  //         "last messege time",
+                  //         style: TextStyle(color: Colors.grey),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                ],
+              ),
+              
+            )
+          ],
+        ),
+      ),
+    );

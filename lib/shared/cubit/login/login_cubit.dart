@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartmate/shared/cubit/login/login_states.dart';
 import 'package:smartmate/shared/networks/local/cache_helper.dart';
@@ -19,6 +20,7 @@ class LoginCubit extends Cubit<LoginStates> {
 
   //instance of firebase Auht,facebook and google
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
   bool _isSignedIn = false;
@@ -82,6 +84,7 @@ class LoginCubit extends Cubit<LoginStates> {
         _provider = "Google";
         _uid = userDetails.uid;
         _isSignedIn = true;
+
         emit(SignInWithGoogleSuccesState());
       } on FirebaseAuthException catch (error) {
         switch (error.code) {
@@ -173,11 +176,16 @@ class LoginCubit extends Cubit<LoginStates> {
     }
   }
 
-  Future userSignOut() async {
+  Future userSignOut(context) async {
     await firebaseAuth.signOut();
     await googleSignIn.signOut();
     _isSignedIn = false;
     clearStoredData();
+    showDialog(
+        context: context,
+        builder: (context) => LottieBuilder.network(
+            "https://assets7.lottiefiles.com/packages/lf20_ztxhxdwa.json"));
+
     emit(SignOutState());
   }
 
@@ -303,6 +311,7 @@ class LoginCubit extends Cubit<LoginStates> {
         .doc(uId)
         .set(model.toMap())
         .then((value) {
+      CacheHelper.saveData(key: "uid", value: uId);
       emit(CreateUserLoginSuccessState());
     }).catchError((error) {
       print(error.toString());
@@ -325,17 +334,29 @@ class LoginCubit extends Cubit<LoginStates> {
   }
 
   //                              email and password
+
   void userLogin({required String email, required String password, context}) {
+    showDialog(
+        context: context,
+        builder: (context) => LottieBuilder.network(
+            "https://assets7.lottiefiles.com/packages/lf20_ztxhxdwa.json"));
+
     emit(LoginLoadingState());
     FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password)
         .then((value) {
-      CacheHelper.saveData(key: "uid", value: "user");
-      navigateTo(context, HomeScreen());
+      CacheHelper.saveData(key: "uid", value: value.user!.uid);
+      Future.delayed(const Duration(seconds: 3)).then((value) {
+        navigateAndFinish(
+          context,
+          HomeScreen(),
+        );
+      });
       emit(LoginSuccessState(value.user!.uid));
     }).catchError((error) {
-      showToast(text: error.toString(), state: ToasStates.error);
-      emit(LoginErrodState(error.toString()));
+      if (context != null)
+        showToast(text: error.toString(), state: ToasStates.error);
+      emit(LoginErrorState(error.toString()));
     });
   }
 

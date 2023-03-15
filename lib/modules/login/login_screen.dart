@@ -9,6 +9,8 @@ import 'package:smartmate/modules/login/phone_login.dart';
 import 'package:smartmate/shared/components/components.dart';
 import 'package:smartmate/shared/cubit/login/login_cubit.dart';
 import 'package:smartmate/shared/cubit/login/login_states.dart';
+import 'package:smartmate/shared/networks/local/cache_helper.dart';
+import 'package:smartmate/shared/styles/colors.dart';
 
 import '../register/register_screen.dart';
 
@@ -33,7 +35,12 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<LoginCubit, LoginStates>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is LoginSuccessState) {
+          print(state.uId);
+          CacheHelper.saveData(key: "uid", value: state.uId);
+        }
+      },
       builder: (context, state) {
         return Scaffold(
           backgroundColor: Colors.white,
@@ -138,19 +145,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         ConditionalBuilder(
                           condition: State is! LoginLoadingState,
-                          builder: (context) => defaultButton(
+                          builder: (BuildContext context) => defaultButton(
                               function: () {
                                 if (formKey.currentState!.validate()) {
                                   LoginCubit.get(context).userLogin(
                                       email: emailController.text,
-                                      password: passwordController.text,context: context);
+                                      password: passwordController.text,
+                                      context: context);
                                 }
                               },
                               radius: 20,
                               text: "Login",
                               isUpperCase: true),
-                          fallback: (context) =>
-                              Center(child: CircularProgressIndicator()),
+                          fallback: (context) => Center(
+                              child: CircularProgressIndicator(
+                            color: defaultColor,
+                          )),
                         ),
                         SizedBox(
                           height: 30,

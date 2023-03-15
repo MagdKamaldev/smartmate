@@ -50,13 +50,15 @@ dependencies:
   bloc: ^8.1.1
   flutter_bloc: ^8.1.2
   conditional_builder_null_safety: ^0.0.6
+  fluentui_icons: ^1.0.0
+  material_color_generator: ^1.1.0
+  badges: ^3.0.2
   
   
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: ^0.11.0
 
 
 flutter_icons:
