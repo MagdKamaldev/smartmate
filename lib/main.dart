@@ -50,10 +50,13 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => LoginCubit()),
-        BlocProvider(create: (context) => AppCubit()..getUsers()),
+        BlocProvider(
+            create: (context) => AppCubit()
+              ..getUsers()
+              ),
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'smart mate',
         theme: ThemeData(),
         home: Consumer<LoginCubit>(
           builder: (context, internetProvider, child) {

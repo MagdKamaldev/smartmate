@@ -20,8 +20,9 @@ class ChatDetails extends StatelessWidget {
     return BlocConsumer<AppCubit, AppStates>(
       listener: (context, state) {},
       builder: (context, state) {
-        AppCubit.get(context).getMesseges(recieverId: userModel!.uid!);
+        //AppCubit.get(context).getMesseges(recieverId: userModel!.uid!);
         return Scaffold(
+          backgroundColor: Colors.grey[300],
           appBar: AppBar(
             backgroundColor: defaultColor,
             titleSpacing: 0.0,
@@ -66,43 +67,53 @@ class ChatDetails extends StatelessWidget {
                   SizedBox(
                     height: 5,
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey[300]!, width: 1),
-                        borderRadius: BorderRadius.circular(15)),
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Expanded(
-                            child: TextFormField(
-                          controller: messegeController,
-                          decoration: const InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Type Your messege !"),
-                        )),
-                        Container(
-                            height: 50,
-                            color: defaultColor,
-                            child: MaterialButton(
-                              minWidth: 1,
-                              onPressed: () {
-                                AppCubit.get(context).sendMessege(
-                                    recieverId: userModel!.uid.toString(),
-                                    dateTime: DateTime.now().toString(),
-                                    text: messegeController.text);
-                                messegeController.text = "";
-                              },
-                              child: const Icon(
-                                Icons.send,
-                                size: 16,
-                                color: Colors.white,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black, width: 1),
+                              borderRadius: BorderRadius.circular(15)),
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 20,
                               ),
-                            ))
-                      ],
-                    ),
+                              Expanded(
+                                  child: TextFormField(
+                                controller: messegeController,
+                                decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: "Type Your messege !"),
+                              )),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      CircleAvatar(
+                        backgroundColor: defaultColor,
+                        radius: 22,
+                        child: MaterialButton(
+                          minWidth: 1,
+                          onPressed: () {
+                            AppCubit.get(context).sendMessege(
+                                recieverId: userModel!.uid.toString(),
+                                dateTime: DateTime.now().toString(),
+                                text: messegeController.text);
+                            messegeController.text = "";
+                          },
+                          child: const Icon(
+                            Icons.send,
+                            size: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                 ],
               ),
@@ -120,7 +131,7 @@ Widget buildMessege(MessegeModel model, context) => Align(
         width: MediaQuery.of(context).size.width * .5,
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
         decoration: BoxDecoration(
-            color: Colors.grey[300],
+            color: Colors.grey[500],
             borderRadius: const BorderRadiusDirectional.only(
               bottomEnd: Radius.circular(10),
               topStart: Radius.circular(10),
@@ -142,7 +153,7 @@ Widget buildMessege(MessegeModel model, context) => Align(
               alignment: Alignment.bottomRight,
               child: Text(
                 model.dateTime!.substring(11, 16).toString(),
-                style: TextStyle(color: Colors.grey),
+                style: TextStyle(color: Colors.grey[800]),
               ),
             )
           ],
@@ -178,7 +189,7 @@ Widget buildMyMessege(MessegeModel model, context) => Align(
               alignment: Alignment.bottomRight,
               child: Text(
                 model.dateTime!.substring(11, 16).toString(),
-                style: TextStyle(color: Colors.brown),
+                style: TextStyle(color: Colors.green[900]),
               ),
             )
           ],

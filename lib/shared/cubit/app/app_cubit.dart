@@ -32,6 +32,9 @@ class AppCubit extends Cubit<AppStates> {
     if (index == 0) {
       getUsers();
     }
+    if (index == 2) {
+      getUserData();
+    }
     emit(ChangeBottomNavState());
   }
 
@@ -42,7 +45,6 @@ class AppCubit extends Cubit<AppStates> {
 
     FirebaseFirestore.instance.collection("users").doc(uid).get().then((value) {
       userModel = UserModel.fromJson(value.data()!);
-      print(value.id.toString());
       emit(GetUserSuccessState());
     }).catchError((error) {
       print(error.toString());
@@ -79,7 +81,7 @@ class AppCubit extends Cubit<AppStates> {
       recieverId: recieverId,
       dateTime: dateTime,
     );
-    print(CacheHelper.getData(key: "uid"));
+    // print(CacheHelper.getData(key: "uid"));
     //sender
     FirebaseFirestore.instance
         .collection("users")
@@ -109,7 +111,6 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   List<MessegeModel> messeges = [];
-
   void getMesseges({
     required String recieverId,
   }) {
@@ -131,10 +132,5 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
-  MessegeModel? lastmessege;
-
-  void getlastmessege() {
-    lastmessege = messeges.last;
-    print(lastmessege!.text);
-  }
+  
 }

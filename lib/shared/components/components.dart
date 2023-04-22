@@ -7,6 +7,8 @@ import 'package:smartmate/models/user_model.dart';
 import 'package:smartmate/modules/screens/chat_details.dart';
 import 'package:smartmate/shared/styles/colors.dart';
 
+import '../cubit/app/app_cubit.dart';
+
 Widget defaultDivider() => Container(
       width: double.infinity,
       height: 1,
@@ -118,7 +120,7 @@ Widget defaultFormField({
 Widget myDivider() => Container(
       width: double.infinity,
       height: 1,
-      color: Colors.grey[300],
+      color: Colors.grey,
     );
 
 void navigateTo(context, widget) => Navigator.push(
@@ -181,6 +183,7 @@ Widget buildChatItem({
   UserModel? model,
   required context,
   MessegeModel? lastmessege,
+  int? index,
 }) =>
     GestureDetector(
       onTap: () {
@@ -189,6 +192,8 @@ Widget buildChatItem({
             ChatDetails(
               userModel: model,
             ));
+        AppCubit.get(context).getMesseges(
+            recieverId: AppCubit.get(context).users[index!].uid.toString());
       },
       child: Container(
         width: double.infinity,
@@ -207,35 +212,14 @@ Widget buildChatItem({
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     model.name!,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  // SizedBox(
-                  //   height: 5,
-                  // ),
-                  // Expanded(
-                  //   child: Row(
-                  //     children: [
-                  //       SizedBox(
-                  //         width: 5,
-                  //       ),
-                  //       Text(
-                  //         "last messege",
-                  //         style: TextStyle(color: Colors.grey[600]),
-                  //       ),
-                  //       Spacer(),
-                  //       Text(
-                  //         "last messege time",
-                  //         style: TextStyle(color: Colors.grey),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
                 ],
               ),
-              
             )
           ],
         ),

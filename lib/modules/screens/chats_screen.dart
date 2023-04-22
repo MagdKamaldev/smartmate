@@ -9,24 +9,29 @@ class ChatsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AppCubit, AppStates>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        // AppCubit.get(context).getLastMessages();
+      },
       builder: (context, state) {
         List<UserModel> users = AppCubit.get(context).users;
-        return ListView.separated(
-          itemBuilder: (context, index) => Builder(builder: (context) {
-            //  AppCubit.get(context).getMesseges(recieverId: AppCubit.get(context).users[index].uid.toString());
-            return Padding(
-              padding: const EdgeInsets.all(14.0),
-              child: Column(children: [
-                buildChatItem(
-                  model: AppCubit.get(context).users[index],
-                  context: context,
-                ),
-              ]),
-            );
-          }),
-          itemCount: users.length,
-          separatorBuilder: (context, index) => myDivider(),
+        return Container(
+          color: Colors.grey[300],
+          child: ListView.separated(
+            itemBuilder: (context, index) => Builder(builder: (context) {
+              return Padding(
+                padding: const EdgeInsets.all(14.0),
+                child: Column(children: [
+                  buildChatItem(
+                    model: AppCubit.get(context).users[index],
+                    context: context,
+                    index: index,
+                  ),
+                ]),
+              );
+            }),
+            itemCount: users.length,
+            separatorBuilder: (context, index) => myDivider(),
+          ),
         );
       },
     );

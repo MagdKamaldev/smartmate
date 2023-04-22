@@ -20,7 +20,6 @@ class LoginCubit extends Cubit<LoginStates> {
 
   //instance of firebase Auht,facebook and google
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
   bool _isSignedIn = false;

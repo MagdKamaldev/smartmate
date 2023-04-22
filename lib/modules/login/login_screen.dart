@@ -1,5 +1,4 @@
 // ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, use_build_context_synchronously
-
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +10,6 @@ import 'package:smartmate/shared/cubit/login/login_cubit.dart';
 import 'package:smartmate/shared/cubit/login/login_states.dart';
 import 'package:smartmate/shared/networks/local/cache_helper.dart';
 import 'package:smartmate/shared/styles/colors.dart';
-
 import '../register/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {

@@ -21,3 +21,9 @@ class GetMessegeSuccessState extends AppStates{}
 class GetAllUsersSuccessState extends AppStates{}
 
 class GetAllUsersErrorState extends AppStates{}
+
+class GetLastMessegeLoadingState extends AppStates{}
+
+class GetLastMessegeSuccessState extends AppStates{}
+
+class GetLastMessegeErrorState extends AppStates{}
