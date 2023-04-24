@@ -77,7 +77,7 @@ class LoginCubit extends Cubit<LoginStates> {
         createUser(
             name: userDetails.displayName!,
             email: userDetails.email!,
-            phone: "null",
+            phone: "Doesn't exist",
             uId: userDetails.uid,
             image: userDetails.photoURL);
         _provider = "Google";
@@ -294,8 +294,10 @@ class LoginCubit extends Cubit<LoginStates> {
     required String phone,
     required String uId,
     String? image,
+    String? bio,
   }) {
     UserModel model = UserModel(
+      bio: bio ?? "I'm using smartmate ",
       name: name,
       email: email,
       phone: phone,

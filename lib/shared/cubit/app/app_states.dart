@@ -27,3 +27,13 @@ class GetLastMessegeLoadingState extends AppStates{}
 class GetLastMessegeSuccessState extends AppStates{}
 
 class GetLastMessegeErrorState extends AppStates{}
+
+class ProfileImagePickedSuccessState extends AppStates{}
+
+class ProfileImagePickedErrorState extends AppStates{}
+
+class UpdateUserDataErrorState extends AppStates{}
+
+class UpdateUserDataLoadingState  extends AppStates{}
+
+class UploadProfileImageErrorState  extends AppStates{}

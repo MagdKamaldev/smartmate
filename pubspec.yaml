@@ -52,7 +52,8 @@ dependencies:
   conditional_builder_null_safety: ^0.0.6
   fluentui_icons: ^1.0.0
   material_color_generator: ^1.1.0
-  badges: ^3.0.2
+  image_picker: ^0.8.7+4
+  firebase_storage: ^11.1.1
   
   
 

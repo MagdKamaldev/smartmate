@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
             create: (context) => AppCubit()
               ..getUsers()
-              ),
+              ..getUserData()),
       ],
       child: MaterialApp(
         title: 'smart mate',

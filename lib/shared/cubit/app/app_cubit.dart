@@ -1,6 +1,10 @@
+// ignore_for_file: deprecated_member_use
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:smartmate/modules/screens/chats_screen.dart';
 import 'package:smartmate/modules/screens/groups_screen.dart';
 import 'package:smartmate/modules/screens/profile_screen.dart';
@@ -39,6 +43,7 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   UserModel? userModel;
+
 
   void getUserData() {
     emit(GetUserLoadingState());
@@ -132,5 +137,72 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
-  
+  File? profileImage;
+  var picker = ImagePicker();
+
+  Future<void> getProfileImage({
+    required String name,
+    required String phone,
+    required String bio,
+  }) async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      profileImage = File(pickedFile.path);
+      uploadProfileImage(
+        name: name,
+        phone: phone,
+        bio:bio,
+      );
+      emit(ProfileImagePickedSuccessState());
+    } else {
+      emit(ProfileImagePickedErrorState());
+    }
+  }
+
+  void updateUser({
+    required String name,
+    required String phone,
+    String? cover,
+    String? image,
+    String?bio,
+  }) {
+    UserModel model = UserModel(
+      name: name,
+      phone: phone,
+      bio: bio,
+      email: userModel!.email,
+      image: image ?? userModel!.image,
+    );
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(CacheHelper.getData(key: "uid"))
+        .update(model.toMap())
+        .then((value) {
+      getUserData();
+    }).catchError((error) {
+      emit(UpdateUserDataErrorState());
+    });
+  }
+
+  void uploadProfileImage({
+    required String name,
+    required String phone,
+    required String bio,
+  }) {
+    emit(UpdateUserDataLoadingState());
+    firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child("users/${Uri.file(profileImage!.path).pathSegments.last}")
+        .putFile(profileImage!)
+        .then((value) {
+      value.ref.getDownloadURL().then((value) {
+        updateUser(name: name, phone: phone,image: value,bio: bio);
+      }).catchError((error) {
+        emit(UploadProfileImageErrorState());
+      });
+    }).catchError((error) {
+      emit(UploadProfileImageErrorState());
+    });
+  }
 }

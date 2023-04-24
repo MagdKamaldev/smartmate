@@ -6,8 +6,8 @@ import 'package:smartmate/models/messege_model.dart';
 import 'package:smartmate/models/user_model.dart';
 import 'package:smartmate/modules/screens/chat_details.dart';
 import 'package:smartmate/shared/styles/colors.dart';
-
 import '../cubit/app/app_cubit.dart';
+
 
 Widget defaultDivider() => Container(
       width: double.infinity,
@@ -121,6 +121,12 @@ Widget myDivider() => Container(
       width: double.infinity,
       height: 1,
       color: Colors.grey,
+    );
+
+Widget myHeightDivider() => Container(
+      width: 2,
+      height: double.infinity,
+      color: Colors.black,
     );
 
 void navigateTo(context, widget) => Navigator.push(
