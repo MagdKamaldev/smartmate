@@ -35,6 +35,7 @@ class HomeScreen extends StatelessWidget {
                   )),
             ],
           ),
+          backgroundColor: Colors.grey[300],
           body: cubit.screens[cubit.currentIndex],
           bottomNavigationBar: BottomNavigationBar(
             backgroundColor: defaultColor,

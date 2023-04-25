@@ -19,8 +19,7 @@ class ProfileScreen extends StatelessWidget {
         UserModel? model = AppCubit.get(context).userModel;
         return ConditionalBuilder(
             condition: model != null,
-            builder: (context) => Container(
-                  color: Colors.grey[300],
+            builder: (context) => SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Container(

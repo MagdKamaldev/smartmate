@@ -58,6 +58,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'smart mate',
         theme: ThemeData(),
+        themeMode: ThemeMode.light,
         home: Consumer<LoginCubit>(
           builder: (context, internetProvider, child) {
             return startWidget;
