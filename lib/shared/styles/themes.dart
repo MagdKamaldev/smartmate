@@ -5,7 +5,6 @@ import 'package:hexcolor/hexcolor.dart';
 import 'colors.dart';
 
 ThemeData lightTheme = ThemeData(
-    useMaterial3: true,
     scaffoldBackgroundColor: Colors.white,
     appBarTheme: AppBarTheme(
       titleSpacing: 20.0,
