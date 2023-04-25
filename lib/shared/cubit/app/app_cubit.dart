@@ -44,11 +44,10 @@ class AppCubit extends Cubit<AppStates> {
 
   UserModel? userModel;
 
-
   void getUserData() {
     emit(GetUserLoadingState());
 
-    FirebaseFirestore.instance.collection("users").doc(uid).get().then((value) {
+    FirebaseFirestore.instance.collection("users").doc(uId).get().then((value) {
       userModel = UserModel.fromJson(value.data()!);
       emit(GetUserSuccessState());
     }).catchError((error) {
@@ -61,9 +60,10 @@ class AppCubit extends Cubit<AppStates> {
 
   void getUsers() {
     users = [];
+    uId = CacheHelper.getData(key: "uid");
     FirebaseFirestore.instance.collection("users").get().then((value) {
       for (var element in value.docs) {
-        if (element.data()["uid"] != CacheHelper.getData(key: "uid")) {
+        if (element.id != uId) {
           users.add(UserModel.fromJson(element.data()));
         }
       }
@@ -82,7 +82,7 @@ class AppCubit extends Cubit<AppStates> {
   }) {
     MessegeModel model = MessegeModel(
       text: text,
-      senderId: CacheHelper.getData(key: "uid"),
+      senderId: uId,
       recieverId: recieverId,
       dateTime: dateTime,
     );
@@ -90,7 +90,7 @@ class AppCubit extends Cubit<AppStates> {
     //sender
     FirebaseFirestore.instance
         .collection("users")
-        .doc(CacheHelper.getData(key: "uid"))
+        .doc(uId)
         .collection("chats")
         .doc(recieverId)
         .collection("messeges")
@@ -105,7 +105,7 @@ class AppCubit extends Cubit<AppStates> {
         .collection("users")
         .doc(recieverId)
         .collection("chats")
-        .doc(CacheHelper.getData(key: "uid"))
+        .doc(uId)
         .collection("messeges")
         .add(model.toMap())
         .then((value) {
@@ -122,7 +122,7 @@ class AppCubit extends Cubit<AppStates> {
     emit(GetMessegeLoadingState());
     FirebaseFirestore.instance
         .collection("users")
-        .doc(CacheHelper.getData(key: "uid"))
+        .doc(uId)
         .collection("chats")
         .doc(recieverId)
         .collection("messeges")
@@ -151,7 +151,7 @@ class AppCubit extends Cubit<AppStates> {
       uploadProfileImage(
         name: name,
         phone: phone,
-        bio:bio,
+        bio: bio,
       );
       emit(ProfileImagePickedSuccessState());
     } else {
@@ -164,19 +164,19 @@ class AppCubit extends Cubit<AppStates> {
     required String phone,
     String? cover,
     String? image,
-    String?bio,
+    String? bio,
   }) {
     UserModel model = UserModel(
       name: name,
       phone: phone,
       bio: bio,
-      email: userModel!.email,
+      email: userModel?.email,
       image: image ?? userModel!.image,
     );
 
     FirebaseFirestore.instance
         .collection('users')
-        .doc(CacheHelper.getData(key: "uid"))
+        .doc(uId)
         .update(model.toMap())
         .then((value) {
       getUserData();
@@ -191,13 +191,19 @@ class AppCubit extends Cubit<AppStates> {
     required String bio,
   }) {
     emit(UpdateUserDataLoadingState());
+    if (profileImage == null) {
+      // handle the case where no profile image was selected
+      emit(UploadProfileImageErrorState());
+      return;
+    }
     firebase_storage.FirebaseStorage.instance
         .ref()
         .child("users/${Uri.file(profileImage!.path).pathSegments.last}")
         .putFile(profileImage!)
         .then((value) {
       value.ref.getDownloadURL().then((value) {
-        updateUser(name: name, phone: phone,image: value,bio: bio);
+        updateUser(name: name, phone: phone, image: value, bio: bio);
+        getUsers();
       }).catchError((error) {
         emit(UploadProfileImageErrorState());
       });

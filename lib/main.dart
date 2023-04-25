@@ -19,10 +19,10 @@ void main() async {
   await CacheHelper.init();
   Widget? widget;
   bool? onBoarding = CacheHelper.getData(key: "onBoarding");
-  uid = CacheHelper.getData(key: "uid");
+  uId = CacheHelper.getData(key: "uid");
 
   if (onBoarding != null) {
-    if (uid != null) {
+    if (uId != null) {
       widget = HomeScreen();
     } else {
       widget = LoginScreen();

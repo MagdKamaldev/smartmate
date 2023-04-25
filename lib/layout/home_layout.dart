@@ -43,7 +43,7 @@ class HomeScreen extends StatelessWidget {
             showUnselectedLabels: false,
             items: [
               BottomNavigationBarItem(
-                  icon: Icon(Icons.messenger), label: "chats"),
+                  icon: Icon(Icons.messenger), label: "Users"),
               BottomNavigationBarItem(
                   icon: Icon(Icons.smart_toy), label: "Bot"),
               BottomNavigationBarItem(

@@ -36,4 +36,6 @@ class UpdateUserDataErrorState extends AppStates{}
 
 class UpdateUserDataLoadingState  extends AppStates{}
 
+class UploadProfileImageLoadingState  extends AppStates{}
+
 class UploadProfileImageErrorState  extends AppStates{}

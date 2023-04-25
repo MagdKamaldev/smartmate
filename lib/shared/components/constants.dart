@@ -10,4 +10,4 @@ void signOut(context) {
     });
 }
 
-dynamic uid = "";
+dynamic uId = "";

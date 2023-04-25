@@ -346,7 +346,7 @@ class LoginCubit extends Cubit<LoginStates> {
     FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password)
         .then((value) {
-      CacheHelper.saveData(key: "uid", value: value.user!.uid);
+       CacheHelper.saveData(key: "uid", value: value.user!.uid);
       Future.delayed(const Duration(seconds: 3)).then((value) {
         navigateAndFinish(
           context,

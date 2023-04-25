@@ -1,29 +1,22 @@
 // ignore_for_file: must_be_immutable, unnecessary_null_comparison
-
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:smartmate/models/user_model.dart';
+import 'package:smartmate/modules/screens/edit_profile.dart';
 import 'package:smartmate/shared/components/components.dart';
 import 'package:smartmate/shared/cubit/app/app_cubit.dart';
 import 'package:smartmate/shared/cubit/app/app_states.dart';
 import 'package:smartmate/shared/styles/colors.dart';
 
 class ProfileScreen extends StatelessWidget {
-  var nameController = TextEditingController();
-  var phoneController = TextEditingController();
-  var bioController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AppCubit, AppStates>(
       listener: (context, state) {},
       builder: (context, state) {
         UserModel? model = AppCubit.get(context).userModel;
-        nameController.text = model!.name!;
-        phoneController.text = model.phone!;
-        bioController.text = model.bio!;
         return ConditionalBuilder(
             condition: model != null,
             builder: (context) => Container(
@@ -49,25 +42,7 @@ class ProfileScreen extends StatelessWidget {
                                         child: CircleAvatar(
                                           radius: 60,
                                           backgroundImage: NetworkImage(
-                                              model.image.toString()),
-                                        ),
-                                      ),
-                                      IconButton(
-                                        onPressed: () {
-                                          AppCubit.get(context).getProfileImage(
-                                            name: nameController.text,
-                                            phone: phoneController.text,
-                                            bio: bioController.text,
-                                          );
-                                        },
-                                        icon: CircleAvatar(
-                                          backgroundColor: defaultColor,
-                                          radius: 20,
-                                          child: Icon(
-                                            Icons.camera_alt,
-                                            size: 16,
-                                            color: Colors.white,
-                                          ),
+                                              model!.image.toString()),
                                         ),
                                       ),
                                     ],
@@ -75,7 +50,7 @@ class ProfileScreen extends StatelessWidget {
                                 ],
                               ),
                               SizedBox(
-                                height: 5,
+                                height: 20,
                               ),
                               Text(
                                 model.name!,
@@ -94,7 +69,7 @@ class ProfileScreen extends StatelessWidget {
                             ],
                           ),
                           SizedBox(
-                            height: 30,
+                            height: 50,
                           ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
@@ -132,6 +107,42 @@ class ProfileScreen extends StatelessWidget {
                               ],
                             ),
                           ),
+                          SizedBox(
+                            height: 50,
+                          ),
+                          defaultButton(
+                            function: () {
+                              navigateTo(context, EditProfileScreen());
+                            },
+                            text: "Edit Profile",
+                            radius: 15,
+                          ),
+                          SizedBox(
+                            height: 50,
+                          ),
+                          CircleAvatar(
+                            radius: 55,
+                            backgroundColor: Colors.grey,
+                            child: CircleAvatar(
+                              radius: 50, // adjust the size as needed
+                              backgroundImage:
+                                  AssetImage('assets/images/Heading.png'),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            "Smart Mate",
+                            style: TextStyle(color: defaultColor),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            "By Magd",
+                            style: TextStyle(color: Colors.grey[700]),
+                          )
                         ],
                       ),
                     ),
