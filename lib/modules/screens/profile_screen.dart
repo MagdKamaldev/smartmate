@@ -10,6 +10,7 @@ import 'package:smartmate/shared/cubit/app/app_cubit.dart';
 import 'package:smartmate/shared/cubit/app/app_states.dart';
 import 'package:smartmate/shared/styles/colors.dart';
 
+
 class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
