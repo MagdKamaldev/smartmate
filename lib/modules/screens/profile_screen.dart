@@ -71,6 +71,16 @@ class ProfileScreen extends StatelessWidget {
                           SizedBox(
                             height: 50,
                           ),
+                          defaultButton(
+                            function: () {
+                              navigateTo(context, EditProfileScreen());
+                            },
+                            text: "Edit Profile",
+                            radius: 15,
+                          ),
+                          SizedBox(
+                            height: 50,
+                          ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Column(
@@ -106,16 +116,6 @@ class ProfileScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                          ),
-                          SizedBox(
-                            height: 50,
-                          ),
-                          defaultButton(
-                            function: () {
-                              navigateTo(context, EditProfileScreen());
-                            },
-                            text: "Edit Profile",
-                            radius: 15,
                           ),
                           SizedBox(
                             height: 50,

@@ -8,7 +8,6 @@ import 'package:smartmate/modules/screens/chat_details.dart';
 import 'package:smartmate/shared/styles/colors.dart';
 import '../cubit/app/app_cubit.dart';
 
-
 Widget defaultDivider() => Container(
       width: double.infinity,
       height: 1,
@@ -116,6 +115,7 @@ Widget defaultFormField({
     ),
   );
 }
+
 
 Widget myDivider() => Container(
       width: double.infinity,

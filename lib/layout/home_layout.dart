@@ -44,11 +44,11 @@ class HomeScreen extends StatelessWidget {
             showUnselectedLabels: false,
             items: [
               BottomNavigationBarItem(
-                  icon: Icon(Icons.messenger), label: "Users"),
+                  icon: Icon(Icons.messenger_outline), label: "Chats"),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.smart_toy), label: "Bot"),
+                  icon: Icon(Icons.circle_outlined), label: "Stories"),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.person), label: "Profile"),
+                  icon: Icon(Icons.person_outline), label: "Profile"),
             ],
             onTap: (index) {
               cubit.changeBottomNavBar(index);

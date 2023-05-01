@@ -7,11 +7,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smartmate/modules/screens/chats_screen.dart';
 import 'package:smartmate/modules/screens/groups_screen.dart';
-import 'package:smartmate/modules/screens/profile_screen.dart';
 import 'package:smartmate/shared/components/constants.dart';
 import 'package:smartmate/shared/networks/local/cache_helper.dart';
 import '../../../models/messege_model.dart';
 import '../../../models/user_model.dart';
+import '../../../modules/screens/profile_screen.dart';
 import 'app_states.dart';
 
 class AppCubit extends Cubit<AppStates> {
@@ -20,11 +20,13 @@ class AppCubit extends Cubit<AppStates> {
   static AppCubit get(context) => BlocProvider.of(context);
 
   int currentIndex = 0;
+
   List<Widget> screens = [
     ChatsScreen(),
-    GroupsScreen(),
+    StoriesScreen(),
     ProfileScreen(),
   ];
+
   List<String> titles = [
     "Home",
     "Chats",

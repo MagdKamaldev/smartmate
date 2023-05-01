@@ -54,7 +54,12 @@ dependencies:
   material_color_generator: ^1.1.0
   image_picker: ^0.8.7+4
   firebase_storage: ^11.1.1
-  
+  chat_gpt_sdk:
+    git:
+      url: https://github.com/iampawan/Flutter-ChatGPT.git
+  flutter_dotenv: ^5.0.2
+  velocity_x: ^3.6.0
+  percent_indicator: ^4.2.3
   
 
 dev_dependencies:
