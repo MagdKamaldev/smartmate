@@ -1,31 +1,30 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, override_on_non_overriding_member
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import '../../models/story_model.dart';
 import '../../shared/story_components/story_components.dart';
 
 class StoryPage extends StatefulWidget {
   @override
-  State<StoryPage> createState() => _StoryPageState();
+  final StoryModel model;
+  StoryPage({required this.model});
+  State<StoryPage> createState() => _StoryPageState(model: model);
 }
 
 class _StoryPageState extends State<StoryPage> {
-  int currentStoryIndex = 0;
+  final StoryModel model;
+  _StoryPageState ({required this.model});
 
-  final List<Widget> stories = [
-    story1(),
-    story2(),
-    story3(),
-  ];
+
+  int currentStoryIndex = 0;
 
   List<double> percentWatched = [];
 
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < stories.length; i++) {
-      percentWatched.add(0);
-    }
+    percentWatched = [0]; // Initialize with 0 for the only story
     _startWatching();
   }
 
@@ -37,12 +36,7 @@ class _StoryPageState extends State<StoryPage> {
         } else {
           percentWatched[currentStoryIndex] = 1;
           timer.cancel();
-          if (currentStoryIndex < stories.length - 1) {
-            currentStoryIndex++;
-            _startWatching();
-          } else {
-            Navigator.pop(context);
-          }
+          Navigator.pop(context);
         }
       });
     });
@@ -61,12 +55,7 @@ class _StoryPageState extends State<StoryPage> {
       });
     } else {
       setState(() {
-        if (currentStoryIndex < stories.length - 1) {
-          percentWatched[currentStoryIndex] = 1;
-          currentStoryIndex++;
-        } else {
-          percentWatched[currentStoryIndex] = 1;
-        }
+        percentWatched[currentStoryIndex] = 1;
       });
     }
   }
@@ -78,7 +67,7 @@ class _StoryPageState extends State<StoryPage> {
       child: Scaffold(
         body: Stack(
           children: [
-            stories[currentStoryIndex],
+            story1(model,context),
             storyBars(percentWatched: percentWatched),
           ],
         ),

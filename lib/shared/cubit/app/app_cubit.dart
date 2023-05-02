@@ -276,7 +276,7 @@ class AppCubit extends Cubit<AppStates> {
     StoryModel model = StoryModel(
       name: userModel!.name,
       image: userModel!.image,
-      uId: userModel!.uid,
+      uId: CacheHelper.getData(key: "uid"),
       dateTime: dateTime,
       text: text,
       storyImage: storyImage ?? "",
@@ -293,28 +293,16 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   List<StoryModel> stories = [];
-  List<String> storyId = [];
+  List<String> postId = [];
 
-  Map<String, List<StoryModel>> userStories = {};
-
-  void getStories() {
-    userStories = {}; // Clear the existing user stories map
-    emit(GetStoriesLoadingState());
-
+  getStories() {
+    stories = [];
     FirebaseFirestore.instance.collection("stories").get().then((value) {
       for (var element in value.docs) {
-        StoryModel story = StoryModel.fromJson(element.data());
-        String userId = story.uId!;
-
-        // If this is the first story for this user, create a new list
-        if (!userStories.containsKey(userId)) {
-          userStories[userId] = [];
-        }
-
-        // Add the story to the list for this user
-        userStories[userId]!.add(story);
+        postId.add(element.id);
+        stories.add(StoryModel.fromJson(element.data()));
+        emit(GetStoriesSuccessState());
       }
-      emit(GetStoriesSuccessState());
     }).catchError((error) {
       emit(GetStoriesErrorState());
     });

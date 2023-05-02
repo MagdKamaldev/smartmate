@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartmate/shared/cubit/app/app_states.dart';
 import 'package:smartmate/shared/styles/colors.dart';
-import '../../shared/components/components.dart';
 import '../../shared/cubit/app/app_cubit.dart';
 
 class AddStory extends StatelessWidget {
@@ -12,7 +11,12 @@ class AddStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AppCubit, AppStates>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is CreateStorySuccesState) {
+          Navigator.pop(context);
+        
+        }
+      },
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
@@ -46,7 +50,10 @@ class AddStory extends StatelessWidget {
           body: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(children: [
-              if (state is CreateStoryLoadingState) LinearProgressIndicator(),
+              if (state is CreateStoryLoadingState)
+                LinearProgressIndicator(
+                  color: defaultColor,
+                ),
               if (state is CreateStoryLoadingState)
                 SizedBox(
                   height: 10,
