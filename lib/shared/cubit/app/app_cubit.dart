@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +8,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smartmate/modules/screens/chats_screen.dart';
 import 'package:smartmate/modules/screens/groups_screen.dart';
+import 'package:smartmate/shared/components/components.dart';
 import 'package:smartmate/shared/components/constants.dart';
 import 'package:smartmate/shared/networks/local/cache_helper.dart';
 import '../../../models/messege_model.dart';
+import '../../../models/story_model.dart';
 import '../../../models/user_model.dart';
 import '../../../modules/screens/profile_screen.dart';
 import 'app_states.dart';
@@ -37,6 +40,9 @@ class AppCubit extends Cubit<AppStates> {
     currentIndex = index;
     if (index == 0) {
       getUsers();
+    }
+    if (index == 1) {
+      getStories();
     }
     if (index == 2) {
       getUserData();
@@ -212,5 +218,127 @@ class AppCubit extends Cubit<AppStates> {
     }).catchError((error) {
       emit(UploadProfileImageErrorState());
     });
+  }
+
+  File? storyImage;
+
+  Future<void> getStoryImagefromGallery(context) async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      storyImage = File(pickedFile.path);
+      Navigator.pop(context);
+      emit(StoryImagePickedFromGallerySuccessState());
+    } else {
+      showToast(text: "no image selected", state: ToasStates.error);
+      emit(StoryImagePickedFromGalleryErrorState());
+    }
+  }
+
+  Future<void> getStoryImagefromCamera(context) async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    if (pickedFile != null) {
+      storyImage = File(pickedFile.path);
+      Navigator.pop(context);
+      emit(StoryImagePickedFromCameraSuccessState());
+    } else {
+      showToast(text: "no image selected", state: ToasStates.error);
+      emit(StoryImagePickedFromCameraErrorState());
+    }
+  }
+
+  void uploadStoryImage({
+    required String dateTime,
+    required String text,
+  }) {
+    emit(CreateStoryLoadingState());
+    firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child("stories/${Uri.file(storyImage!.path).pathSegments.last}")
+        .putFile(storyImage!)
+        .then((value) {
+      value.ref.getDownloadURL().then((value) {
+        createStory(dateTime: dateTime, text: text, storyImage: value);
+      }).catchError((error) {
+        emit(CreateStoryErrorState());
+      });
+    }).catchError((error) {
+      emit(CreateStoryErrorState());
+    });
+  }
+
+  void createStory({
+    required String dateTime,
+    required String text,
+    String? storyImage,
+  }) {
+    emit(CreateStoryLoadingState());
+
+    StoryModel model = StoryModel(
+      name: userModel!.name,
+      image: userModel!.image,
+      uId: userModel!.uid,
+      dateTime: dateTime,
+      text: text,
+      storyImage: storyImage ?? "",
+    );
+
+    FirebaseFirestore.instance
+        .collection('stories')
+        .add(model.toMap())
+        .then((value) {
+      emit(CreateStorySuccesState());
+    }).catchError((error) {
+      emit(CreateStoryErrorState());
+    });
+  }
+
+  List<StoryModel> stories = [];
+  List<String> storyId = [];
+
+  Map<String, List<StoryModel>> userStories = {};
+
+  void getStories() {
+    userStories = {}; // Clear the existing user stories map
+    emit(GetStoriesLoadingState());
+
+    FirebaseFirestore.instance.collection("stories").get().then((value) {
+      for (var element in value.docs) {
+        StoryModel story = StoryModel.fromJson(element.data());
+        String userId = story.uId!;
+
+        // If this is the first story for this user, create a new list
+        if (!userStories.containsKey(userId)) {
+          userStories[userId] = [];
+        }
+
+        // Add the story to the list for this user
+        userStories[userId]!.add(story);
+      }
+      emit(GetStoriesSuccessState());
+    }).catchError((error) {
+      emit(GetStoriesErrorState());
+    });
+  }
+
+  List<StoryModel> userStoriesList = [];
+  void getSingleUserStories(userId) {
+    userStoriesList = [];
+    emit(GetSingleUserstoryLoadingState());
+    FirebaseFirestore.instance.collection("stories").get().then((value) {
+      for (var element in value.docs) {
+        if (StoryModel.fromJson(element.data()).uId ==
+            FirebaseAuth.instance.currentUser!.uid) {
+          userStoriesList.add(StoryModel.fromJson(element.data()));
+          emit(GetSingleUserStorySuccessState());
+        }
+      }
+    }).catchError((error) {
+      emit(GetSingleUserStoryErrorState());
+    });
+  }
+
+  void removeStoryImage() {
+    storyImage = null;
+    emit(RemoveStoryImageState());
   }
 }
