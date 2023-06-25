@@ -2,12 +2,13 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lottie/lottie.dart';
 import 'package:smartmate/models/user_model.dart';
 import 'package:smartmate/shared/components/components.dart';
 import 'package:smartmate/shared/cubit/app/app_cubit.dart';
 import 'package:smartmate/shared/cubit/app/app_states.dart';
 import 'package:smartmate/shared/styles/colors.dart';
+
+import '../../shared/components/loading_animation.dart';
 
 class EditProfileScreen extends StatelessWidget {
   var nameController = TextEditingController();
@@ -20,7 +21,7 @@ class EditProfileScreen extends StatelessWidget {
       listener: (context, state) {},
       builder: (context, state) {
         UserModel? model = AppCubit.get(context).userModel;
-        nameController.text = model!.name!;
+        nameController.text = model.name!;
         phoneController.text = model.phone!;
         bioController.text = model.bio!;
         return Scaffold(
@@ -136,8 +137,7 @@ class EditProfileScreen extends StatelessWidget {
                     ),
                   ),
               fallback: (context) => Center(
-                    child: LottieBuilder.network(
-                        "https://assets7.lottiefiles.com/packages/lf20_ztxhxdwa.json"),
+                    child: LoadingAnimation(),
                   )),
         );
       },

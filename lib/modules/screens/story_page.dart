@@ -1,6 +1,5 @@
 // ignore_for_file: must_be_immutable, override_on_non_overriding_member
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import '../../models/story_model.dart';
 import '../../shared/story_components/story_components.dart';

@@ -13,6 +13,7 @@ import 'package:smartmate/shared/styles/colors.dart';
 import 'modules/login/login_screen.dart';
 import 'shared/cubit/app/app_cubit.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();

@@ -5,8 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smartmate/shared/components/loading_animation.dart';
 import 'package:smartmate/shared/cubit/login/login_states.dart';
 import 'package:smartmate/shared/networks/local/cache_helper.dart';
 import '../../../layout/home_layout.dart';
@@ -181,9 +181,9 @@ class LoginCubit extends Cubit<LoginStates> {
     _isSignedIn = false;
     clearStoredData();
     showDialog(
-        context: context,
-        builder: (context) => LottieBuilder.network(
-            "https://assets7.lottiefiles.com/packages/lf20_ztxhxdwa.json"));
+      context: context,
+      builder: (context) => LoadingAnimation(),
+    );
 
     emit(SignOutState());
   }
@@ -338,15 +338,15 @@ class LoginCubit extends Cubit<LoginStates> {
 
   void userLogin({required String email, required String password, context}) {
     showDialog(
-        context: context,
-        builder: (context) => LottieBuilder.network(
-            "https://assets7.lottiefiles.com/packages/lf20_ztxhxdwa.json"));
+      context: context,
+      builder: (context) => LoadingAnimation(),
+    );
 
     emit(LoginLoadingState());
     FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password)
         .then((value) {
-       CacheHelper.saveData(key: "uid", value: value.user!.uid);
+      CacheHelper.saveData(key: "uid", value: value.user!.uid);
       Future.delayed(const Duration(seconds: 3)).then((value) {
         navigateAndFinish(
           context,

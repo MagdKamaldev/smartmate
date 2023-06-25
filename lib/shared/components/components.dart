@@ -64,8 +64,11 @@ Widget defaultFormField({
   Function? suffixPressed,
   bool isClickable = true,
 }) {
+
   final FocusNode focusNode = FocusNode();
-  Color labelColor = Colors.grey; // Initial label color when not focused
+  Color labelColor = Colors.grey; 
+
+  // Initial label color when not focused
 
   return TextFormField(
     validator: (value) {

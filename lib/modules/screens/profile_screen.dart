@@ -2,14 +2,13 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lottie/lottie.dart';
 import 'package:smartmate/models/user_model.dart';
 import 'package:smartmate/modules/screens/edit_profile.dart';
 import 'package:smartmate/shared/components/components.dart';
 import 'package:smartmate/shared/cubit/app/app_cubit.dart';
 import 'package:smartmate/shared/cubit/app/app_states.dart';
 import 'package:smartmate/shared/styles/colors.dart';
-
+import '../../shared/components/loading_animation.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
@@ -17,7 +16,7 @@ class ProfileScreen extends StatelessWidget {
     return BlocConsumer<AppCubit, AppStates>(
       listener: (context, state) {},
       builder: (context, state) {
-        UserModel? model = AppCubit.get(context).userModel;
+        UserModel model = AppCubit.get(context).userModel;
         return ConditionalBuilder(
             condition: model != null,
             builder: (context) => SingleChildScrollView(
@@ -42,7 +41,7 @@ class ProfileScreen extends StatelessWidget {
                                         child: CircleAvatar(
                                           radius: 60,
                                           backgroundImage: NetworkImage(
-                                              model!.image.toString()),
+                                              model.image.toString()),
                                         ),
                                       ),
                                     ],
@@ -60,7 +59,7 @@ class ProfileScreen extends StatelessWidget {
                                 height: 20,
                               ),
                               Text(
-                                model.bio!,
+                                model.bio.toString(),
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!
@@ -149,8 +148,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
             fallback: (context) => Center(
-                  child: LottieBuilder.network(
-                      "https://assets7.lottiefiles.com/packages/lf20_ztxhxdwa.json"),
+                  child: LoadingAnimation(),
                 ));
       },
     );

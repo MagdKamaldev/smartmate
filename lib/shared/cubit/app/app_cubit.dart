@@ -50,7 +50,7 @@ class AppCubit extends Cubit<AppStates> {
     emit(ChangeBottomNavState());
   }
 
-  UserModel? userModel;
+  late UserModel userModel;
 
   void getUserData() {
     emit(GetUserLoadingState());
@@ -178,8 +178,8 @@ class AppCubit extends Cubit<AppStates> {
       name: name,
       phone: phone,
       bio: bio,
-      email: userModel?.email,
-      image: image ?? userModel!.image,
+      email: userModel.email,
+      image: image ?? userModel.image,
     );
 
     FirebaseFirestore.instance
@@ -274,8 +274,8 @@ class AppCubit extends Cubit<AppStates> {
     emit(CreateStoryLoadingState());
 
     StoryModel model = StoryModel(
-      name: userModel!.name,
-      image: userModel!.image,
+      name: userModel.name,
+      image: userModel.image,
       uId: CacheHelper.getData(key: "uid"),
       dateTime: dateTime,
       text: text,

@@ -14,7 +14,6 @@ class AddStory extends StatelessWidget {
       listener: (context, state) {
         if (state is CreateStorySuccesState) {
           Navigator.pop(context);
-        
         }
       },
       builder: (context, state) {
@@ -63,14 +62,14 @@ class AddStory extends StatelessWidget {
                   CircleAvatar(
                     radius: 25,
                     backgroundImage:
-                        NetworkImage(AppCubit.get(context).userModel!.image!),
+                        NetworkImage(AppCubit.get(context).userModel.image!),
                   ),
                   SizedBox(
                     width: 15.0,
                   ),
                   Expanded(
                     child: Text(
-                      AppCubit.get(context).userModel!.name!,
+                      AppCubit.get(context).userModel.name!,
                       style: TextStyle(height: 1.4),
                     ),
                   ),
